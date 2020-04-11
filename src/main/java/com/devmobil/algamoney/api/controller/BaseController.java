@@ -4,6 +4,8 @@ import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -47,7 +49,7 @@ public class BaseController<E extends BaseEntity> {
 	
 	@PostMapping
 	@Transactional
-	public ResponseEntity<E> store(@RequestBody E entity, UriComponentsBuilder uriComponentsBuilder ) {
+	public ResponseEntity<E> store(@Valid @RequestBody E entity, UriComponentsBuilder uriComponentsBuilder ) {
 		E newEntity = repository.save(entity); 
 		
 		URI uri = uriComponentsBuilder.path("/").buildAndExpand().toUri();
@@ -55,7 +57,7 @@ public class BaseController<E extends BaseEntity> {
 	}
 
 	@PutMapping(value = "{id}")
-	public ResponseEntity<E> update(@PathVariable(value = "id") long id, @RequestBody E entity) {
+	public ResponseEntity<E> update(@Valid @PathVariable(value = "id") long id, @RequestBody E entity) {
 		Optional<E> optional = repository.findById(id);
 		if(optional.isPresent()) {
 			entity.setId(id);
