@@ -1,7 +1,6 @@
 package com.devmobil.algamoney.api.controller;
 
 import java.lang.reflect.ParameterizedType;
-import java.net.URI;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.devmobil.algamoney.api.model.BaseEntity;
 import com.devmobil.algamoney.api.repository.BaseRepository;
@@ -49,11 +47,9 @@ public class BaseController<E extends BaseEntity> {
 	
 	@PostMapping
 	@Transactional
-	public ResponseEntity<E> store(@Valid @RequestBody E entity, UriComponentsBuilder uriComponentsBuilder ) {
-		E newEntity = repository.save(entity); 
-		
-		URI uri = uriComponentsBuilder.path("/").buildAndExpand().toUri();
-		return ResponseEntity.created(uri).body(newEntity);
+	public ResponseEntity<E> store(@Valid @RequestBody E entity) {
+		E newEntity = repository.save(entity); 		
+		return ResponseEntity.status(HttpStatus.CREATED).body(newEntity);
 	}
 
 	@PutMapping(value = "{id}")
