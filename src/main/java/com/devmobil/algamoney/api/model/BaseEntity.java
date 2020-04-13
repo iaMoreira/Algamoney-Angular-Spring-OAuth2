@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @MappedSuperclass
 public class BaseEntity {
 
@@ -24,7 +26,7 @@ public class BaseEntity {
 	public void setId(long id) {
 		this.id = id;
 	}
-
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
