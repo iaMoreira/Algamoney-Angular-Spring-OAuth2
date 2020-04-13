@@ -9,7 +9,7 @@ CREATE TABLE person (
 	cep VARCHAR(191) NOT NULL,
 	city VARCHAR(191) NOT NULL,
     state VARCHAR(191) NOT NULL,
-    created_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT NOW()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO person (NAME, PLACE, NUMBER, DISTRICT, COMPLEMENT, CEP, CITY, STATE, CREATED_AT) VALUES ('Ian Moreira', 'Rua exemplo', '45', 'Centro', 'ao lado da farmacia', '45504-300', 'Ubaitaba', 'BA', NOW());

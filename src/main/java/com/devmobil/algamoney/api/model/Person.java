@@ -1,7 +1,5 @@
 package com.devmobil.algamoney.api.model;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -23,8 +21,5 @@ public class Person extends BaseEntity{
 //	private boolean status;
 	@Embedded
 	private Address address;
-	
-	private LocalDateTime createdAt;
-	
 	
 }
