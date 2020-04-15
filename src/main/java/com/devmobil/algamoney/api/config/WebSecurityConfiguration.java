@@ -11,28 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-/**
- *
- * @author Nataniel Paiva <nataniel.paiva@gmail.com>
- */
-
-
-
-/*
- * Vamos para um dos arquivos mais importantes!
- * Esse é o arquivo que gerencia as rotas, mesmo que vc não veja o mesmo nome da classe,
- * mas sempre que vermos a Herança dele em WebSecurityConfigurerAdapter vai ser a classe
- * responsável pelas rotas.
- * 
- * A classe WebSecurityConfigurerAdapter implementa 3 método configure:
- *  - Um fará a autorização do usuário;
- *  - Outro tratará das permissões das rotas, como os verbos HTTP;
- *  - E o último liberar quais aquivos estáticos vão ser liberados para acesso externo.
- *  
- *  Como estamos usando o OAuth2 aqui para trabalhar com as autorizações o segundo método configure está implementado 
- *  dentro da classe Auth2ServerConfiguration.
- * */
-
 
 @Configuration
 @EnableWebSecurity

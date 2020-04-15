@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,9 +17,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 public class OAuth2ServerConfiguration {
@@ -52,18 +51,14 @@ public class OAuth2ServerConfiguration {
 		}
 		
 	}
-	
 
 	@Configuration
 	@EnableAuthorizationServer
-	public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
-	
+	public static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 		
 		@Autowired
 	    @Qualifier("authenticationManagerBean")
 	    private AuthenticationManager authenticationManager;
-	
-        private TokenStore tokenStore = new InMemoryTokenStore();
 
 		@Autowired
 		private PasswordEncoder passwordEncoder;
@@ -71,29 +66,34 @@ public class OAuth2ServerConfiguration {
 		@Override
 		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 			endpoints
-				.tokenStore(this.tokenStore)
+				.tokenStore(this.tokenStore())
+				.accessTokenConverter(accessTokenConverter())
+				.reuseRefreshTokens(false) // caso não esteja falso ele não irá renovar e só terá o valor de tempo inicial
 				.authenticationManager(this.authenticationManager);
 		}
 		
+		@Bean
+		public JwtAccessTokenConverter accessTokenConverter() {
+			JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
+			accessTokenConverter.setSigningKey("algaworks");;
+			return accessTokenConverter;
+		}
+
 		@Override
 		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 			clients.inMemory()
 				.withClient("angular")
 				.secret(passwordEncoder.encode("123456"))
 				.scopes("read", "write")
-				.authorizedGrantTypes("password")
-				.accessTokenValiditySeconds(1800);
+				.authorizedGrantTypes("password", "refresh_token")
+				.accessTokenValiditySeconds(5)
+				.refreshTokenValiditySeconds(3600 * 24);
 		}
+	
 		
-
-		@Bean
-        @Primary
-        public DefaultTokenServices tokenServices() {
-            DefaultTokenServices tokenServices = new DefaultTokenServices();
-            tokenServices.setSupportRefreshToken(true);
-            tokenServices.setTokenStore(this.tokenStore);
-            return tokenServices;
-        }
+		public TokenStore tokenStore() {
+			return new JwtTokenStore(accessTokenConverter());
+		}
 	}
 	
 }
