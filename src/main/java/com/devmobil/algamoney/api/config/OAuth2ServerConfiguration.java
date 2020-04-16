@@ -34,7 +34,6 @@ public class OAuth2ServerConfiguration {
 
 	@EnableWebSecurity
 	@EnableResourceServer
-	@EnableGlobalMethodSecurity(prePostEnabled =  true, securedEnabled = true)
 	protected static  class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
 		@Autowired

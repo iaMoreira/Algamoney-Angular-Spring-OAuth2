@@ -24,7 +24,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    // liberação de arquivos estáticos (imagens, css, html, xml, json e outros)
 //    @Override 
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**").antMatchers("/h2-console/**")
+        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**")
         .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
     }
 
