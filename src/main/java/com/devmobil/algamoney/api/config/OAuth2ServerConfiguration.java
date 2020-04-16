@@ -1,5 +1,7 @@
 package com.devmobil.algamoney.api.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +22,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecurityExpressionHandler;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -87,9 +91,11 @@ public class OAuth2ServerConfiguration {
 	
 		@Override
 		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+			TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+			tokenEnhancerChain.setTokenEnhancers(Arrays.asList(this.tokenEnhancer(), this.accessTokenConverter()));
 			endpoints
 				.tokenStore(this.tokenStore())
-				.accessTokenConverter(accessTokenConverter())
+				.tokenEnhancer(tokenEnhancerChain)
 				.reuseRefreshTokens(false) // caso não esteja falso ele não irá renovar e só terá o valor de tempo inicial
 				.authenticationManager(this.authenticationManager);
 		}
@@ -115,6 +121,10 @@ public class OAuth2ServerConfiguration {
 		
 		public TokenStore tokenStore() {
 			return new JwtTokenStore(accessTokenConverter());
+		}
+		
+		public TokenEnhancer tokenEnhancer() {
+			return new CustomTokenEnhancer();
 		}
 	}
 	

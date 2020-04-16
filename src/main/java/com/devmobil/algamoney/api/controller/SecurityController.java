@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.devmobil.algamoney.api.config.ApplicationProperty;
 import com.devmobil.algamoney.api.model.User;
+import com.devmobil.algamoney.api.repository.UserRepository;
 
 @RestController
 public class SecurityController {
@@ -21,14 +22,19 @@ public class SecurityController {
 	
 	@Autowired
 	private ApplicationProperty property;
-
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	// devolve o usuário autenticado;
     @RequestMapping(value = "/user-auth", method = RequestMethod.GET)
     public User user() {
-        return (User) SecurityContextHolder.getContext()
+        String email =  (String) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
+        return userRepository.findByEmail(email);
+        
+        
     }
     
     @DeleteMapping("/revoke")

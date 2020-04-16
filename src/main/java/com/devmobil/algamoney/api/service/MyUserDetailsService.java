@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.devmobil.algamoney.api.config.UserAuth;
 import com.devmobil.algamoney.api.model.User;
 import com.devmobil.algamoney.api.repository.UserRepository;
 
@@ -29,7 +30,7 @@ public class MyUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(String.format("Usuário {0} não existe! ", username));
         }
 //        return new UserRepositoryUserDetails(user);
-        return new org.springframework.security.core.userdetails.User(username, user.getPassword(), getPermissoes(user));
+        return new UserAuth(user, getPermissoes(user));
     } 
     
 
