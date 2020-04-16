@@ -86,7 +86,7 @@ public class OAuth2ServerConfiguration {
 				.secret(passwordEncoder.encode("123456"))
 				.scopes("read", "write")
 				.authorizedGrantTypes("password", "refresh_token")
-				.accessTokenValiditySeconds(5)
+				.accessTokenValiditySeconds(8000)
 				.refreshTokenValiditySeconds(3600 * 24);
 		}
 	
